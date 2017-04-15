@@ -1,0 +1,10 @@
+[package]
+authors = ["Jacek Całusiński <forger@forger.pl>"]
+name = "nanomsg-tokio"
+version = "0.1.0"
+
+[dependencies]
+futures = "0.1.13"
+log = "0.3.7"
+nanomsg = "0.6.1"
+tokio-core = "0.1.6"
