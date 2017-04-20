@@ -2,7 +2,7 @@ use nanomsg::{Socket as NanoSocket, Protocol};
 use nanomsg::endpoint::Endpoint;
 use nanomsg::result::Error as NanoError;
 
-use futures::{Stream, Async, Poll};
+use futures::{Stream, Sink, Async, AsyncSink, Poll, StartSend};
 
 use std::fmt::{Debug, Formatter, Result as FmtResult};
 
@@ -97,6 +97,26 @@ impl Socket {
             Err(err) => Err(err),
         }
     }
+
+    fn send(&mut self, message: &[u8]) -> Result<Option<()>, NanoError> {
+        match self.socket.nb_write(message) {
+            Ok(size) => {
+                trace!("Write ok, wrote {} bytes", size);
+
+                Ok(Some(()))
+            }
+            Err(NanoError::TryAgain) => {
+                trace!("Async::NotReady while reading from socket");
+                self.send_evented
+                    .as_mut()
+                    .expect("send_evented is None")
+                    .schedule();
+
+                Ok(None)
+            }
+            Err(err) => Err(err),
+        }
+    }
 }
 
 impl Drop for Socket {
@@ -142,5 +162,38 @@ impl Stream for Socket {
             }
             evented::Async::NotReady => Ok(Async::NotReady),
         }
+    }
+}
+
+impl Sink for Socket {
+    type SinkItem = Vec<u8>;
+    type SinkError = NanoError;
+
+    fn start_send(&mut self, item: Self::SinkItem) -> StartSend<Self::SinkItem, Self::SinkError> {
+
+        trace!("Sending message");
+
+        if self.endpoint.is_none() {
+            error!("Endpoint is empty");
+            return Err(NanoError::Unknown);
+        }
+
+        match self.send_evented.as_mut().unwrap().poll() {
+            evented::Async::Ready => {
+                match self.send(&item) {
+                    Ok(Some(_)) => Ok(AsyncSink::Ready),
+                    Ok(None) => Ok(AsyncSink::NotReady(item)),
+                    Err(err) => Err(err),
+                }
+            }
+            evented::Async::NotReady => Ok(AsyncSink::NotReady(item)),
+        }
+    }
+
+    fn poll_complete(&mut self) -> Poll<(), Self::SinkError> {
+
+        trace!("Nanomsg::Sink::poll_complete");
+
+        Ok(Async::Ready(()))
     }
 }
