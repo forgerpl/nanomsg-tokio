@@ -4,21 +4,17 @@ name = "nanomsg-tokio"
 version = "0.1.0"
 
 [dependencies]
-chrono = "0.3.0"
-colored = "1.4.1"
-flexi_logger = "0.5.2"
-futures = "0.1.13"
-libc = "0.2.21"
-log = "0.3.7"
-mio = "0.6.6"
-nanomsg = "0.6.2"
-slog = "2.0.2"
-slog-term = "2.0.0-4.0"
-tokio-core = "0.1.6"
+chrono = "0.4.0"
+flexi_logger = "0.6.8"
+futures = "0.1.15"
+libc = "0.2.30"
+log = "0.3.8"
+mio = "0.6.10"
+tokio-core = "0.1.9"
 
 [dependencies.colored_logger]
-optional = false
 git = "ssh://git@github.com/FCG-LLC/colored_logger.git"
+optional = false
 
 [dependencies.nanomsg]
 git = "ssh://git@github.com/FCG-LLC/nanomsg-rs.git"
