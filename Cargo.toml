@@ -19,3 +19,6 @@ tokio-core = "0.1.6"
 [dependencies.colored_logger]
 optional = false
 git = "ssh://git@github.com/FCG-LLC/colored_logger.git"
+
+[dependencies.nanomsg]
+git = "ssh://git@github.com/FCG-LLC/nanomsg-rs.git"
