@@ -11,13 +11,12 @@ use tokio_core::reactor::Core;
 use nanomsg_tokio::Socket;
 use nanomsg::Protocol;
 use futures::Stream;
-use colored_logger::formatter;
 
 
 fn main() {
-    flexi_logger::LogOptions::new()
-        .format(formatter)
-        .init(Some("info".to_string()))
+    flexi_logger::Logger::with_str("info")
+        .format(colored_logger::formatter)
+        .start()
         .unwrap();
 
     let mut core = Core::new().unwrap();
