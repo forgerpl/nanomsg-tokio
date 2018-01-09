@@ -19,4 +19,5 @@ flexi_logger = "0.6.11"
 [dev-dependencies.colored_logger]
 git = "ssh://git@github.com/FCG-LLC/colored_logger.git"
 optional = false
+version = "0.2.0"
 
