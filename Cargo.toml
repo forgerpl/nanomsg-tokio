@@ -11,12 +11,12 @@ mio = "0.6.12"
 tokio-core = "0.1.12"
 
 [dependencies.nanomsg]
-git = "ssh://git@github.com/FCG-LLC/nanomsg-rs.git"
+git = "ssh://git@gitlab.cs.int/rust/nanomsg-rs.git"
 
 [dev-dependencies]
 flexi_logger = "0.6.11"
 
 [dev-dependencies.colored_logger]
-git = "ssh://git@github.com/FCG-LLC/colored_logger.git"
+git = "ssh://git@gitlab.cs.int/rust/colored-logger.git"
 optional = false
 
