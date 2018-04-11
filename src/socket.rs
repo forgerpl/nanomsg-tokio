@@ -5,6 +5,7 @@ use nanomsg::result::Error as NanoError;
 use futures::{Stream, Sink, Async, AsyncSink, Poll, StartSend};
 
 use std::fmt::{Debug, Formatter, Result as FmtResult};
+use std::ops::{Deref, DerefMut};
 
 use tokio_core::reactor::Handle;
 
@@ -195,5 +196,19 @@ impl Sink for Socket {
         trace!("Nanomsg::Sink::poll_complete");
 
         Ok(Async::Ready(()))
+    }
+}
+
+impl Deref for Socket {
+    type Target = NanoSocket;
+
+    fn deref(&self) -> &Self::Target {
+        &self.socket
+    }
+}
+
+impl DerefMut for Socket {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.socket
     }
 }
