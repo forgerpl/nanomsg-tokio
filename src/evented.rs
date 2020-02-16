@@ -1,12 +1,12 @@
 use futures;
+use log::*;
 
-use std::os::unix::io::RawFd;
 use std::io;
+use std::os::unix::io::RawFd;
 
 use tokio_core::reactor::{Handle, PollEvented};
 
-use socket_fd::SocketFd;
-
+use crate::socket_fd::SocketFd;
 
 #[derive(Debug)]
 pub enum Async {
@@ -25,9 +25,9 @@ pub struct NanoEvented {
 impl NanoEvented {
     pub fn try_new(sockfd: RawFd, handle: &Handle) -> io::Result<NanoEvented> {
         Ok(NanoEvented {
-               io: PollEvented::new(SocketFd(sockfd), handle)?,
-               should_poll: true,
-           })
+            io: PollEvented::new(SocketFd(sockfd), handle)?,
+            should_poll: true,
+        })
     }
 
     pub fn poll(&mut self) -> Async {

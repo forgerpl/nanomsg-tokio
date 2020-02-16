@@ -1,16 +1,16 @@
-use nanomsg::{Socket as NanoSocket, Protocol};
+use log::*;
 use nanomsg::endpoint::Endpoint;
 use nanomsg::result::Error as NanoError;
+use nanomsg::{Protocol, Socket as NanoSocket};
 
-use futures::{Stream, Sink, Async, AsyncSink, Poll, StartSend};
+use futures::{Async, AsyncSink, Poll, Sink, StartSend, Stream};
 
 use std::fmt::{Debug, Formatter, Result as FmtResult};
 use std::ops::{Deref, DerefMut};
 
 use tokio_core::reactor::Handle;
 
-use evented::{self, NanoEvented};
-
+use crate::evented::{self, NanoEvented};
 
 static MAX_SOCKET_NAME_LENGTH: usize = 128;
 
@@ -43,14 +43,13 @@ impl Socket {
             .get_socket_name(MAX_SOCKET_NAME_LENGTH)
             .unwrap_or_else(|_| "Unable to get socket name".to_string());
 
-
         Ok(Socket {
-               socket: socket,
-               endpoint: None,
-               name: name,
-               recv_evented: recv_evented,
-               send_evented: send_evented,
-           })
+            socket: socket,
+            endpoint: None,
+            name: name,
+            recv_evented: recv_evented,
+            send_evented: send_evented,
+        })
     }
 
     pub fn bind(&mut self, addr: &str) -> Result<(), NanoError> {
@@ -154,13 +153,11 @@ impl Stream for Socket {
         }
 
         match self.recv_evented.as_mut().unwrap().poll() {
-            evented::Async::Ready => {
-                match self.fetch() {
-                    Ok(Some(buf)) => Ok(Async::Ready(Some(buf))),
-                    Ok(None) => Ok(Async::NotReady),
-                    Err(err) => Err(err),
-                }
-            }
+            evented::Async::Ready => match self.fetch() {
+                Ok(Some(buf)) => Ok(Async::Ready(Some(buf))),
+                Ok(None) => Ok(Async::NotReady),
+                Err(err) => Err(err),
+            },
             evented::Async::NotReady => Ok(Async::NotReady),
         }
     }
@@ -171,7 +168,6 @@ impl Sink for Socket {
     type SinkError = NanoError;
 
     fn start_send(&mut self, item: Self::SinkItem) -> StartSend<Self::SinkItem, Self::SinkError> {
-
         trace!("Sending message");
 
         if self.endpoint.is_none() {
@@ -180,19 +176,16 @@ impl Sink for Socket {
         }
 
         match self.send_evented.as_mut().unwrap().poll() {
-            evented::Async::Ready => {
-                match self.send(&item) {
-                    Ok(Some(_)) => Ok(AsyncSink::Ready),
-                    Ok(None) => Ok(AsyncSink::NotReady(item)),
-                    Err(err) => Err(err),
-                }
-            }
+            evented::Async::Ready => match self.send(&item) {
+                Ok(Some(_)) => Ok(AsyncSink::Ready),
+                Ok(None) => Ok(AsyncSink::NotReady(item)),
+                Err(err) => Err(err),
+            },
             evented::Async::NotReady => Ok(AsyncSink::NotReady(item)),
         }
     }
 
     fn poll_complete(&mut self) -> Poll<(), Self::SinkError> {
-
         trace!("Nanomsg::Sink::poll_complete");
 
         Ok(Async::Ready(()))

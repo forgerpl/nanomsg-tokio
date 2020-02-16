@@ -2,6 +2,7 @@
 authors = ["Jacek Całusiński <forger@forger.pl>"]
 name = "nanomsg-tokio"
 version = "0.1.0"
+edition = "2018"
 
 [dependencies]
 futures = "^0.1.29"

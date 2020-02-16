@@ -1,18 +1,9 @@
-extern crate flexi_logger;
-extern crate nanomsg_tokio;
-extern crate futures;
-extern crate nanomsg;
-extern crate tokio_core;
-extern crate colored_logger;
-
-use tokio_core::reactor::Core;
-use nanomsg_tokio::Socket;
-use nanomsg::Protocol;
-use nanomsg::result::Error as NanoError;
-use futures::Stream;
-use futures::stream;
 use colored_logger::FormatterBuilder;
-
+use futures::{stream, Stream};
+use nanomsg::result::Error as NanoError;
+use nanomsg::Protocol;
+use nanomsg_tokio::Socket;
+use tokio_core::reactor::Core;
 
 fn main() {
     let formatter = FormatterBuilder::default().build();

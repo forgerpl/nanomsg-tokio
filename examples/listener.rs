@@ -1,18 +1,9 @@
-#[macro_use]
-extern crate log;
-extern crate flexi_logger;
-extern crate nanomsg_tokio;
-extern crate futures;
-extern crate nanomsg;
-extern crate tokio_core;
-extern crate colored_logger;
-
-use tokio_core::reactor::Core;
-use nanomsg_tokio::Socket;
-use nanomsg::Protocol;
-use futures::Stream;
 use colored_logger::FormatterBuilder;
-
+use futures::Stream;
+use log::*;
+use nanomsg::Protocol;
+use nanomsg_tokio::Socket;
+use tokio_core::reactor::Core;
 
 fn main() {
     let formatter = FormatterBuilder::default().build();
@@ -27,11 +18,11 @@ fn main() {
     socket.bind("ipc:///tmp/nanomsg-tokio.ipc").unwrap();
 
     let fut = socket.for_each(|buf| {
-                                  let message = String::from_utf8_lossy(&buf[..]);
-                                  info!("{}", message);
+        let message = String::from_utf8_lossy(&buf[..]);
+        info!("{}", message);
 
-                                  Ok(())
-                              });
+        Ok(())
+    });
 
     core.run(fut).unwrap();
 }

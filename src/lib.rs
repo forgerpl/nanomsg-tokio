@@ -1,12 +1,5 @@
-#[macro_use]
-extern crate log;
-extern crate nanomsg;
-extern crate tokio_core;
-extern crate futures;
-extern crate mio;
-
 mod evented;
-mod socket_fd;
 pub mod socket;
+mod socket_fd;
 
-pub use socket::Socket;
+pub use crate::socket::Socket;
