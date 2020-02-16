@@ -11,11 +11,13 @@ use nanomsg::Protocol;
 use nanomsg::result::Error as NanoError;
 use futures::Stream;
 use futures::stream;
+use colored_logger::FormatterBuilder;
 
 
 fn main() {
+    let formatter = FormatterBuilder::default().build();
     flexi_logger::Logger::with_str("info")
-        .format(colored_logger::formatter)
+        .format(formatter)
         .start()
         .unwrap();
 
@@ -26,5 +28,5 @@ fn main() {
 
     let gen = stream::repeat::<_, NanoError>("test message".into());
 
-    core.run(gen.forward(socket)).unwrap();
+    let _ = core.run(gen.forward(socket)).unwrap();
 }

@@ -11,11 +11,13 @@ use tokio_core::reactor::Core;
 use nanomsg_tokio::Socket;
 use nanomsg::Protocol;
 use futures::Stream;
+use colored_logger::FormatterBuilder;
 
 
 fn main() {
+    let formatter = FormatterBuilder::default().build();
     flexi_logger::Logger::with_str("info")
-        .format(colored_logger::formatter)
+        .format(formatter)
         .start()
         .unwrap();
 

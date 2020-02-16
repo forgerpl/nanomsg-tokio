@@ -4,19 +4,17 @@ name = "nanomsg-tokio"
 version = "0.1.0"
 
 [dependencies]
-futures = "0.1.17"
-libc = "0.2.35"
-log = "0.4.1"
-mio = "0.6.12"
-tokio-core = "0.1.12"
-
-[dependencies.nanomsg]
-git = "ssh://git@gitlab.cs.int/rust/nanomsg-rs.git"
+futures = "^0.1.29"
+libc = "0.2.66"
+log = "0.4.8"
+mio = "0.6.21"
+tokio-core = "0.1.17"
+nanomsg = "0.7.2"
 
 [dev-dependencies]
-flexi_logger = "0.6.11"
+flexi_logger = "0.14.8"
 
 [dev-dependencies.colored_logger]
-git = "ssh://git@gitlab.cs.int/rust/colored-logger.git"
+git = "https://github.com/forgerpl/colored_logger.git"
 optional = false
 
